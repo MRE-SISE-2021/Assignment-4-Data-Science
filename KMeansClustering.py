@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
 
 
 # 2
@@ -42,6 +43,14 @@ class Clustering:
         k_means = KMeans(n_clusters=self.n_clusters, init='random', n_init=self.n_init).fit(self.data_frame)
         self.data_frame['k-means'] = k_means.labels_
 
+    def get_scatter_generosity_social_support(self):
+        plt.scatter(self.data_frame['Generosity'], self.data_frame['Social support'], c=self.data_frame['k-means'])
+        plt.title('K-Means Clustering for Generosity and Social support')
+        plt.xlabel('Generosity')
+        plt.ylabel('Social support')
+        plt.show()
+        return plt
+
 
 # ----------- Tests preprocess (2) -----------
 
@@ -70,4 +79,7 @@ clustering = Clustering(preprocess.data_frame, 5, 5)
 
 # activate k-means algorithm and add result as column to df - works
 clustering.activate_k_means_algorithm()
-print(clustering.data_frame.to_string())
+# print(clustering.data_frame.to_string())
+
+# plot scatter pf Generosity:Social_Support from df
+clustering.get_scatter_generosity_social_support()
