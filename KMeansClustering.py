@@ -6,8 +6,9 @@ import chart_studio.plotly as py
 import plotly.graph_objects as go
 
 
-# back-end
-class KMeansClustering:
+# ---------- back-end ------------
+# class for preprocess the data: cleaning nans, standardization and aggregation the data
+class Preprocess:
     # constructor
     def __init__(self, path):
         self.data_frame = pd.read_excel(path, index_col=0)
@@ -17,7 +18,7 @@ class KMeansClustering:
         self.data_frame.fillna(self.data_frame.mean(), inplace=True)
 
     # normalize the data
-    def normalize(self):
+    def standardization(self):
         col_names = []
         for col_name in self.data_frame.columns:
             if col_name != 'country' and col_name != 'year':
@@ -31,6 +32,13 @@ class KMeansClustering:
     def aggregate_by_country(self):
         self.data_frame = self.data_frame.groupby('country').mean()
         self.data_frame = self.data_frame.drop(['year'], axis=1)
+
+
+# class runs the K-Means algorithm and returns the results
+class Clustering:
+    # constructor
+    def __init__(self, data_frame):
+        self.data_frame = data_frame
 
     # run k-mean algorithm with given parameters
     def activate_k_means_algorithm(self, n_clusters, n_init):
@@ -77,19 +85,19 @@ class KMeansClustering:
 # ----------- Tests preprocess (2) -----------
 
 # create preprocess
-k_means_clustering = KMeansClustering('Dataset.xlsx')
+preprocess = Preprocess('Dataset.xlsx')
 
 # clean_na - works
 # print(k_means_clustering.data_frame.isna().sum())
-k_means_clustering.clean_na()
+preprocess.clean_na()
 # print(k_means_clustering.data_frame.isna().sum())
 
 # normalize - works
-k_means_clustering.normalize()
+preprocess.standardization()
 # print(k_means_clustering.data_frame.to_string())
 
 # aggregate by country - works
-k_means_clustering.aggregate_by_country()
+preprocess.aggregate_by_country()
 # print(k_means_clustering.data_frame.to_string())
 # k_means_clustering.data_frame.to_csv("data_frame_test.csv")
 
@@ -97,12 +105,13 @@ k_means_clustering.aggregate_by_country()
 # ----------- Tests clustering (3) -----------
 
 # activate k-means algorithm and add result as column to df - works
-k_means_clustering.activate_k_means_algorithm(5, 5)
+clustering = Clustering(preprocess.data_frame)
+clustering.activate_k_means_algorithm(5, 5)
 # print(clustering.data_frame.to_string())
 # k_means_clustering.data_frame.to_csv("data_frame_test.csv")
 
 # plot scatter pf Generosity:Social_Support from df
-k_means_clustering.create_scatter_generosity_social_support()
+clustering.create_scatter_generosity_social_support()
 
 # map figure - works
-k_means_clustering.create_country_map()
+clustering.create_country_map()
