@@ -40,7 +40,7 @@ class KMeansClustering:
     # plot scatter
     def create_scatter_generosity_social_support(self):
         plt.scatter(self.data_frame['Generosity'], self.data_frame['Social support'], c=self.data_frame['k-means'])
-        plt.title('K-Means Clustering for Generosity and Social support')
+        plt.title('K-Means Clustering')
         plt.xlabel('Generosity')
         plt.ylabel('Social support')
         plt.show()
@@ -62,7 +62,7 @@ class KMeansClustering:
         ))
 
         fig.update_layout(
-            title_text='K-Means Clustering Map',
+            title_text='K Means Clustering',
             geo=dict(
                 showframe=False,
                 showcoastlines=False,
