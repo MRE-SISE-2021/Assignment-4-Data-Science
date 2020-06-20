@@ -1,11 +1,15 @@
+import csv
+
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
+import chart_studio.plotly as py
+import plotly.graph_objects as go
 
 
-# 2
-class Preprocess:
+# back-end
+class KMeansClustering:
     # constructor
     def __init__(self, path):
         self.data_frame = pd.read_excel(path, index_col=0)
@@ -30,56 +34,76 @@ class Preprocess:
         self.data_frame = self.data_frame.groupby('country').mean()
         self.data_frame = self.data_frame.drop(['year'], axis=1)
 
-
-# 3
-class Clustering:
-    # constructor
-    def __init__(self, data_frame, n_clusters, n_init):
-        self.data_frame = data_frame
-        self.n_clusters = n_clusters
-        self.n_init = n_init
-
-    def activate_k_means_algorithm(self):
-        k_means = KMeans(n_clusters=self.n_clusters, init='random', n_init=self.n_init).fit(self.data_frame)
+    def activate_k_means_algorithm(self, n_clusters, n_init):
+        k_means = KMeans(n_clusters=n_clusters, init='random', n_init=n_init).fit(self.data_frame)
         self.data_frame['k-means'] = k_means.labels_
 
-    def get_scatter_generosity_social_support(self):
+    def create_scatter_generosity_social_support(self):
         plt.scatter(self.data_frame['Generosity'], self.data_frame['Social support'], c=self.data_frame['k-means'])
         plt.title('K-Means Clustering for Generosity and Social support')
         plt.xlabel('Generosity')
         plt.ylabel('Social support')
         plt.show()
+        plt.savefig('k-means_scatter.png')
         return plt
+
+    def create_country_map(self):
+        df_countries = pd.read_csv('country_codes_iso_3.csv')
+        fig = go.Figure(data=go.Choropleth(
+            locations=df_countries['code'],
+            z=self.data_frame['k-means'],
+            colorscale='rainbow',
+            autocolorscale=False,
+            reversescale=True,
+            marker_line_color='darkgray',
+            marker_line_width=0.5,
+            colorbar_title='K-Means',
+        ))
+
+        fig.update_layout(
+            title_text='K-Means Clustering Map',
+            geo=dict(
+                showframe=False,
+                showcoastlines=False,
+                projection_type='equirectangular'
+            )
+        )
+
+        py.sign_in('euguman', '3Zb8TzOCWAs0JmBmNERB')
+        py.image.save_as(fig, filename='country_map.png')
 
 
 # ----------- Tests preprocess (2) -----------
 
 # create preprocess
-preprocess = Preprocess('Dataset.xlsx')
+k_means_clustering = KMeansClustering('Dataset.xlsx')
 
 # clean_na - works
-# print(process.data_frame.isna().sum())
-preprocess.clean_na()
-# print(process.data_frame.isna().sum())
+# print(k_means_clustering.data_frame.isna().sum())
+k_means_clustering.clean_na()
+# print(k_means_clustering.data_frame.isna().sum())
 
 # normalize - works
-preprocess.normalize()
-# print(process.data_frame.to_string())
+k_means_clustering.normalize()
+# print(k_means_clustering.data_frame.to_string())
 
 # aggregate by country - works
-preprocess.aggregate_by_country()
-# print(preprocess.data_frame.to_string())
-# process.data_frame.to_csv("data_frame_test.csv")
+k_means_clustering.aggregate_by_country()
+# print(k_means_clustering.data_frame.to_string())
+# k_means_clustering.data_frame.to_csv("data_frame_test.csv")
 
 
 # ----------- Tests clustering (3) -----------
 
-# create clustering
-clustering = Clustering(preprocess.data_frame, 5, 5)
-
 # activate k-means algorithm and add result as column to df - works
-clustering.activate_k_means_algorithm()
+k_means_clustering.activate_k_means_algorithm(5, 5)
 # print(clustering.data_frame.to_string())
+# k_means_clustering.data_frame.to_csv("data_frame_test.csv")
 
 # plot scatter pf Generosity:Social_Support from df
-clustering.get_scatter_generosity_social_support()
+k_means_clustering.create_scatter_generosity_social_support()
+
+# map figure - works
+k_means_clustering.create_country_map()
+
+# k_means_clustering.get_countries()
