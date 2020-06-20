@@ -1,5 +1,3 @@
-import csv
-
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
@@ -34,10 +32,12 @@ class KMeansClustering:
         self.data_frame = self.data_frame.groupby('country').mean()
         self.data_frame = self.data_frame.drop(['year'], axis=1)
 
+    # run k-mean algorithm with given parameters
     def activate_k_means_algorithm(self, n_clusters, n_init):
         k_means = KMeans(n_clusters=n_clusters, init='random', n_init=n_init).fit(self.data_frame)
         self.data_frame['k-means'] = k_means.labels_
 
+    # plot scatter
     def create_scatter_generosity_social_support(self):
         plt.scatter(self.data_frame['Generosity'], self.data_frame['Social support'], c=self.data_frame['k-means'])
         plt.title('K-Means Clustering for Generosity and Social support')
@@ -47,6 +47,7 @@ class KMeansClustering:
         plt.savefig('k-means_scatter.png')
         return plt
 
+    # plot Choropleth Map
     def create_country_map(self):
         df_countries = pd.read_csv('country_codes_iso_3.csv')
         fig = go.Figure(data=go.Choropleth(
@@ -105,5 +106,3 @@ k_means_clustering.create_scatter_generosity_social_support()
 
 # map figure - works
 k_means_clustering.create_country_map()
-
-# k_means_clustering.get_countries()
