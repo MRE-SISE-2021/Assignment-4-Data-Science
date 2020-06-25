@@ -7,9 +7,7 @@ import plotly.graph_objects as go
 
 
 # ---------- back-end ------------
-"""
-razy
-"""
+
 # class for preprocess the data: cleaning nans, standardization and aggregation the data
 class Preprocess:
     # constructor

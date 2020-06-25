@@ -3,6 +3,7 @@ from tkinter import filedialog
 import KMeansClustering
 from tkinter import messagebox
 import tkinter.font as tkFont
+import os
 
 
 class Window(Frame):
@@ -41,7 +42,7 @@ class Window(Frame):
 
         vcmd = (self.master.register(self.check), '%s')
         Label(self.master, text="Enter Path").grid(row=0)
-        self.labelBrowse = Entry(self.master, bd=5, width=50, validate="key", validatecommand=vcmd)
+        self.labelBrowse = Entry(self.master, bd=5, width=70, validate="key", validatecommand=vcmd)
         self.frame1 = Frame(self.master)
         self.buttonBrowse = Button(self.master, text="Browse", command=lambda: self.fileDialog())
         self.labelBrowse.grid(row=0, column=1, columnspan=2)
@@ -100,22 +101,25 @@ class Window(Frame):
         if path == "":
             messagebox.showinfo("Error", "You have to input path ")
         else:
-            self.bool = True
-            self.preprocess = KMeansClustering.Preprocess(path)
-            # clean_na - works
-            # print(k_means_clustering.data_frame.isna().sum())
-            self.preprocess.clean_na()
-            # print(k_means_clustering.data_frame.isna().sum())
+            if path.endswith(".xlsx"):
+                self.bool = True
+                self.preprocess = KMeansClustering.Preprocess(path)
+                # clean_na - works
+                # print(k_means_clustering.data_frame.isna().sum())
+                self.preprocess.clean_na()
+                # print(k_means_clustering.data_frame.isna().sum())
 
-            # normalize - works
-            self.preprocess.standardization()
-            # print(k_means_clustering.data_frame.to_string())
+                # normalize - works
+                self.preprocess.standardization()
+                # print(k_means_clustering.data_frame.to_string())
 
-            # aggregate by country - works
-            self.preprocess.aggregate_by_country()
-            # print(k_means_clustering.data_frame.to_string())
-            # k_means_clustering.data_frame.to_csv("data_frame_test.csv")
-            messagebox.showinfo("Pre-processing", "Preprocessing completed successfully!")
+                # aggregate by country - works
+                self.preprocess.aggregate_by_country()
+                # print(k_means_clustering.data_frame.to_string())
+                # k_means_clustering.data_frame.to_csv("data_frame_test.csv")
+                messagebox.showinfo("Pre-processing", "Preprocessing completed successfully!")
+            else:
+                messagebox.showinfo("Error", "You should Enter Path And Ends with xlsx !")
 
     def kmeansModel(self):
         print("build the model and Get Visualization")
@@ -124,18 +128,22 @@ class Window(Frame):
         if self.e1.get() == "" or self.e2.get() == "":
             messagebox.showinfo("Error", "One of the parameters is missing ")
         else:
-            if self.bool:
-                # activate k-means algorithm and add result as column to df - works
-                clustering = KMeansClustering.Clustering(self.preprocess.data_frame)
-                clustering.activate_k_means_algorithm(int(self.e1.get()), int(self.e2.get()))
-                # print(clustering.data_frame.to_string())
-                # k_means_clustering.data_frame.to_csv("data_frame_test.csv")
-                # plot scatter pf Generosity:Social_Support from df
-                clustering.create_scatter_generosity_social_support()
-                # map figure - works
-                clustering.create_country_map()
-                messagebox.showinfo("clustering", "Clustering completed successfully!")
-                self.showImg()
+            if self.bool :
+                if int(self.e1.get()) > 2 and int(self.e1.get()) < 165:
+                    # activate k-means algorithm and add result as column to df - works
+                    clustering = KMeansClustering.Clustering(self.preprocess.data_frame)
+                    clustering.activate_k_means_algorithm(int(self.e1.get()), int(self.e2.get()))
+                    # print(clustering.data_frame.to_string())
+                    # k_means_clustering.data_frame.to_csv("data_frame_test.csv")
+                    # plot scatter pf Generosity:Social_Support from df
+                    clustering.create_scatter_generosity_social_support()
+                    # map figure - works
+                    clustering.create_country_map()
+                    messagebox.showinfo("clustering", "Clustering completed successfully!")
+                    self.showImg()
+                else:
+                    messagebox.showinfo("clustering", "The K is wrong")
+
             else:
                 messagebox.showinfo("Error", "Must first do pre-processing ")
 
