@@ -52,7 +52,6 @@ class Clustering:
         plt.title('K-Means Clustering')
         plt.xlabel('Generosity')
         plt.ylabel('Social support')
-        # plt.show()
         plt.savefig('k-means_scatter.png')
         return plt
 
@@ -81,4 +80,3 @@ class Clustering:
 
         py.sign_in('euguman', '3Zb8TzOCWAs0JmBmNERB')
         py.image.save_as(fig, filename='country_map.png')
-
