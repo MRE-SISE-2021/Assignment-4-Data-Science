@@ -7,6 +7,9 @@ import plotly.graph_objects as go
 
 
 # ---------- back-end ------------
+"""
+razy
+"""
 # class for preprocess the data: cleaning nans, standardization and aggregation the data
 class Preprocess:
     # constructor
@@ -51,7 +54,7 @@ class Clustering:
         plt.title('K-Means Clustering')
         plt.xlabel('Generosity')
         plt.ylabel('Social support')
-        plt.show()
+        # plt.show()
         plt.savefig('k-means_scatter.png')
         return plt
 
@@ -81,37 +84,3 @@ class Clustering:
         py.sign_in('euguman', '3Zb8TzOCWAs0JmBmNERB')
         py.image.save_as(fig, filename='country_map.png')
 
-
-# ----------- Tests preprocess (2) -----------
-
-# create preprocess
-preprocess = Preprocess('Dataset.xlsx')
-
-# clean_na - works
-# print(k_means_clustering.data_frame.isna().sum())
-preprocess.clean_na()
-# print(k_means_clustering.data_frame.isna().sum())
-
-# normalize - works
-preprocess.standardization()
-# print(k_means_clustering.data_frame.to_string())
-
-# aggregate by country - works
-preprocess.aggregate_by_country()
-# print(k_means_clustering.data_frame.to_string())
-# k_means_clustering.data_frame.to_csv("data_frame_test.csv")
-
-
-# ----------- Tests clustering (3) -----------
-
-# activate k-means algorithm and add result as column to df - works
-clustering = Clustering(preprocess.data_frame)
-clustering.activate_k_means_algorithm(5, 5)
-# print(clustering.data_frame.to_string())
-# k_means_clustering.data_frame.to_csv("data_frame_test.csv")
-
-# plot scatter pf Generosity:Social_Support from df
-clustering.create_scatter_generosity_social_support()
-
-# map figure - works
-clustering.create_country_map()
