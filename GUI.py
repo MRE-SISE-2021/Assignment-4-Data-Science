@@ -120,16 +120,21 @@ class Window(Frame):
             messagebox.showinfo("Error", "One of the parameters is missing ")
         else:
             if self.bool:
-                if int(self.e1.get()) > 2 and int(self.e1.get()) < 165:
-                    clustering = KMeansClustering.Clustering(self.preprocess.data_frame)
-                    clustering.activate_k_means_algorithm(int(self.e1.get()), int(self.e2.get()))
-                    clustering.create_scatter_generosity_social_support()
-                    clustering.create_country_map()
-                    messagebox.showinfo("clustering", "Clustering completed successfully!")
-                    self.showImg()
-                else:
-                    messagebox.showinfo("clustering", "The K is wrong")
+                if self.e1.get().isdigit() and self.e2.get().isdigit():
+                    if int(self.e1.get()) > 2 and int(self.e1.get()) < 165 and int(self.e2.get()) < 50:
+                        clustering = KMeansClustering.Clustering(self.preprocess.data_frame)
+                        clustering.activate_k_means_algorithm(int(self.e1.get()), int(self.e2.get()))
+                        clustering.create_scatter_generosity_social_support()
+                        clustering.create_country_map()
+                        messagebox.showinfo("clustering", "Clustering completed successfully!")
+                        self.showImg()
+                    else:
+                        messagebox.showinfo("Error", "One of the parameters doesn't make sense \n"
+                                                     "The k must be between 2 and 165 (number of countries)\n"
+                                                     "And Number of runs must be under 50 ")
 
+                else:
+                    messagebox.showinfo("Error", "The parameters must be numbers !")
             else:
                 messagebox.showinfo("Error", "Must first do pre-processing ")
 
